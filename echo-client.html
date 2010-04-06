@@ -8,10 +8,15 @@
 
             function ready() {
                 var out = document.getElementById('out');
+
                 webSocket = new WebSocket('ws://localhost:9876/echo');
 
                 webSocket.onopen = function() {
                     out.innerHTML += 'Connection opened.<br>';
+                };
+
+                webSocket.onerror = function() {
+                    out.innerHTML += 'Connection error.<br>';
                 };
 
                 webSocket.onmessage = function(event) {

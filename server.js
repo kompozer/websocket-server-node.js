@@ -42,8 +42,7 @@ var server = tcp.createServer(function(connection) {
 
     connection.setEncoding('utf8');
 
-
-    connection.addListener('receive', function(data) {
+    connection.addListener('data', function(data) {
         sys.log("data received");
 
         function notAccepted(why) {
@@ -92,7 +91,7 @@ var server = tcp.createServer(function(connection) {
                     '<cross-domain-policy>' +
                     "<allow-access-from domain='*' to-ports='*'/>" +
                     '</cross-domain-policy>'
-                connection.send(policy_xml);
+                connection.write(policy_xml);
                 connection.close();
             }
             
@@ -166,7 +165,7 @@ var server = tcp.createServer(function(connection) {
 
             // Send handshake back
 
-            connection.send('HTTP/1.1 101 Web Socket Protocol Handshake\r\n' +
+            connection.write('HTTP/1.1 101 Web Socket Protocol Handshake\r\n' +
                 'Upgrade: WebSocket\r\n' +
                 'Connection: Upgrade\r\n' +
                 'WebSocket-Origin: ' + headers['Origin'] + '\r\n' +
