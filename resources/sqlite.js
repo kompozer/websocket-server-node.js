@@ -33,7 +33,7 @@ exports.handleData = function(connection, data) {
 
     sys.exec('sqlite3 -line ./resources/' + data)
     .addCallback(function(stdout, stderr) {
-        connection.send('\u0000' + JSON.stringify(parseRows(stdout)) +
+        connection.write('\u0000' + JSON.stringify(parseRows(stdout)) +
             '\uffff');
     });
 }

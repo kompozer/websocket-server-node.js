@@ -1,4 +1,4 @@
 exports.handleData = function(connection, data) {
-    connection.send('\u0000' + data + '\uffff');
+    connection.write('\u0000' + data + '\uffff');
 }
 
