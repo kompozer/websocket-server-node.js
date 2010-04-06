@@ -27,6 +27,8 @@ var tcp = require('tcp');
 var sys = require('sys');
 
 var server = tcp.createServer(function(connection) {
+    sys.log("server created");
+
     if (connection.remoteAddress !== '127.0.0.1') {
         sys.puts('Connection from ' + connection.remoteAddress +
             ' not accepted. Only local connections are currently supported.');
@@ -118,7 +120,8 @@ var server = tcp.createServer(function(connection) {
                 'Origin': ''
             }
 
-            for (i = 1; i < lines.length; i++) {
+            var i, l;
+            for (i = 1, l = lines.length; i < l; i += 1) {
 
                 // We should 'continue' if it's acceptable with blank lines
                 // between headers.
