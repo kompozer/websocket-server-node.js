@@ -188,5 +188,5 @@ var server = tcp.createServer(function(connection) {
              _resource.handleData(connection, data.substr(1, data.length - 2));
         }
     });
-}).listen(8000);
+}).listen(9876);
 

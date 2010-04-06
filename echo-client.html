@@ -8,7 +8,7 @@
 
             function ready() {
                 var out = document.getElementById('out');
-                webSocket = new WebSocket('ws://localhost:8000/echo');
+                webSocket = new WebSocket('ws://localhost:9876/echo');
 
                 webSocket.onopen = function() {
                     out.innerHTML += 'Connection opened.<br>';
