@@ -44,6 +44,8 @@ var server = tcp.createServer(function(connection) {
 
 
     connection.addListener('receive', function(data) {
+        sys.log("data received");
+
         function notAccepted(why) {
             sys.puts('Handshake with ' + connection.remoteAddress +
                 ' not accepted. ' + why);
@@ -57,7 +59,6 @@ var server = tcp.createServer(function(connection) {
 
         // Call the first time anything is recieved. Verify handshake from the
         // client and send handshake back if accepted.
-
         function doHandshake() {
             /*
             These are the lines that are sent as a handshake from the client.
@@ -73,6 +74,8 @@ var server = tcp.createServer(function(connection) {
             6:
             */
 
+            sys.log("about to perform handshake");
+
             var lines = data.split('\r\n');
 
             // Line 0
@@ -80,26 +83,26 @@ var server = tcp.createServer(function(connection) {
             
             // Return flash policy file for web-socket-js
             // http://github.com/gimite/web-socket-js
-            if(request[0].match(/policy-file-request/)){
-              sys.puts('requesting flash policy file');
-              
-              policy_xml = 
-              '<?xml version="1.0"?>' +
-              '<!DOCTYPE cross-domain-policy SYSTEM ' +
-              'ww.macromedia.com/xml/dtds/cross-domain-policy.dtd">' +
-              '<cross-domain-policy>' +
-              "<allow-access-from domain='*' to-ports='*'/>" +
-              '</cross-domain-policy>'
-              connection.send(policy_xml);
-              connection.close();
+            if (request[0].match(/policy-file-request/)){
+                sys.puts('requesting flash policy file');
+
+                policy_xml = '<?xml version="1.0"?>' +
+                    '<!DOCTYPE cross-domain-policy SYSTEM ' +
+                    'ww.macromedia.com/xml/dtds/cross-domain-policy.dtd">' +
+                    '<cross-domain-policy>' +
+                    "<allow-access-from domain='*' to-ports='*'/>" +
+                    '</cross-domain-policy>'
+                connection.send(policy_xml);
+                connection.close();
             }
             
             if (((request[0] === 'GET') && (request[2] === 'HTTP/1.1'))
                 !== true) {
                 notAccepted('Request not valid.');
                 return;
-            }else 
-            sys.puts(request.join(','))
+            } else {
+                sys.puts(request.join(','))
+            }
             var resource = request[1];
 
             if (resource[0] !== '/') {
@@ -170,15 +173,17 @@ var server = tcp.createServer(function(connection) {
                 'WebSocket-Location: ws://' + headers['Host'] + resource +
                     '\r\n' +
                 '\r\n');
+            sys.log("handshake successful");
 
             _doneHandshake = true;
 
             return;
         }
 
-        if (!_doneHandshake)
+        // Decide what to do
+        if (!_doneHandshake) {
             doHandshake();
-        else {
+        } else {
             if (data[0] !== '\u0000' && data[data.length - 1] !== '\ufffd') {
                 sys.puts('Invalid message format from client. ' +
                     'Closing connection.');
